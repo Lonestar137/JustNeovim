@@ -8,6 +8,7 @@ local plugins = {
   --{"github/copilot.vim", lazy = false},
   {'Exafunction/codeium.vim', lazy = false},
   {'ThePrimeagen/harpoon', lazy = false},
+  {'morhetz/gruvbox', lazy = false},
   -- {'voldikss/vim-floaterm', lazy = false},
 
   -- Lua

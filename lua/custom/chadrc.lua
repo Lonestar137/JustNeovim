@@ -36,4 +36,19 @@ vim.api.nvim_set_keymap("i", "<C-J>", 'codeium#Accept()', { silent = true, expr 
 --end
 --map('i', '<C-/>', ':call copilot#Accept()<CR>')
 
+vim.cmd("set guifont=Hack\\ Nerd\\ Font:h10")
+vim.cmd("set autoindent")
+vim.cmd("set linebreak")
+vim.cmd("set breakindent")
+
+-- Set the number of lines to scroll
+vim.api.nvim_win_set_option(0, 'scrolloff', 20)         -- Set the number of lines from top/bottom to start scrolling
+vim.api.nvim_win_set_option(0, 'sidescrolloff', 10)    -- Set the number of columns from the side to start horizontal scrolling
+
+-- vim.cmd('colorscheme gruvbox')
+-- vim.cmd('set background=dark')
+-- vim.cmd('colorscheme gruvbox')
+
+
+
 return M
