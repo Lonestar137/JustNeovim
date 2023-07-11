@@ -53,6 +53,15 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
   {'Exafunction/codeium.vim', lazy = false},
+  {
+    "folke/zen-mode.nvim",
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+  },
+
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
@@ -208,6 +217,11 @@ require('lazy').setup({
 -- Set the cwd to the directory of the file you're editing.
 vim.cmd([[autocmd BufEnter * execute 'cd ' .. expand('%:p:h')]])
 
+vim.cmd('set foldmethod=expr')
+vim.cmd('set foldexpr=nvim_treesitter#foldexpr()')
+-- vim.foldmethod = 'expr'
+-- vim.foldexpr = 'nvim_treesitter#foldexpr()'
+
 -- Set scrolloff
 vim.o.scrolloff = 30
 vim.api.nvim_win_set_option(0, 'sidescrolloff', 10)    -- Set the number of columns from the side to start horizontal scrolling
@@ -217,8 +231,19 @@ vim.cmd("set guifont=Hack\\ Nerd\\ Font:h10")
 -- vim.cmd("set linebreak")
 -- vim.cmd("set breakindent")
 
+local toggle_modes = { 'n', 't' }
+local is_terminal_open = false
+function ToggleTerminal()
+  if is_terminal_open then
+    vim.api.nvim_command('bd!')
+    is_terminal_open = false
+  else
+    vim.api.nvim_command('botright terminal')
+    is_terminal_open = true
+  end
+end
 
-
+vim.keymap.set(toggle_modes, '<A-m>', '<Cmd>lua ToggleTerminal()<CR>', { silent = true, noremap = true })
 
 -- Set highlight on search
 vim.o.hlsearch = false
@@ -403,7 +428,8 @@ local on_attach = function(_, bufnr)
   end
 
 
-  vim.api.nvim_set_keymap("i", "<C-J>", 'codeium#Accept()', { silent = true, expr = true })
+  -- Custom Keybinds
+  vim.api.nvim_set_keymap("i", "<C-j>", 'codeium#Accept()', { silent = true, expr = true })
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
