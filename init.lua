@@ -21,6 +21,9 @@ In addition, I have some `NOTE:` items throughout the file.
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.cmd("nnoremap <leader>; :Lexplore<CR>")
+-- Custom Keybinds
+vim.api.nvim_set_keymap("i", "<C-j>", 'codeium#Accept()', { silent = true, expr = true })
 
 local icons = true
 local theme = 'gruvbox'
@@ -427,9 +430,6 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
-
-  -- Custom Keybinds
-  vim.api.nvim_set_keymap("i", "<C-j>", 'codeium#Accept()', { silent = true, expr = true })
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
