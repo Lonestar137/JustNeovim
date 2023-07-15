@@ -64,7 +64,13 @@ require('lazy').setup({
       -- refer to the configuration section below
     }
   },
-
+  {
+      "kdheepak/lazygit.nvim",
+      -- optional for floating window border decoration
+      dependencies = {
+          "nvim-lua/plenary.nvim",
+      },
+  },
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
