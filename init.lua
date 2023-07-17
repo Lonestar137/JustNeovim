@@ -21,9 +21,17 @@ In addition, I have some `NOTE:` items throughout the file.
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+--vim.cmd('set shiftwidth=4')
 vim.cmd("nnoremap <leader>; :Lexplore<CR>")
+
 -- Custom Keybinds
 vim.api.nvim_set_keymap("i", "<C-j>", 'codeium#Accept()', { silent = true, expr = true })
+
+-- manually define filetypes
+local setFileTypes = [[ augroup filetypedetect
+  au! BufRead,BufNewFile JenkinsFile            setfiletype groovy
+augroup END ]]
+vim.cmd(setFileTypes)
 
 local icons = true
 local theme = 'gruvbox'
@@ -71,6 +79,39 @@ require('lazy').setup({
           "nvim-lua/plenary.nvim",
       },
   },
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    opts = {},
+  },
+
+  {'romgrk/nvim-treesitter-context',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter'
+    },
+    config = function() require('treesitter-context').setup() end,
+  },
+  {
+    "ray-x/go.nvim",
+    dependencies = {  -- optional packages
+      "ray-x/guihua.lua",
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("go").setup()
+    end,
+    event = {"CmdlineEnter"},
+    ft = {"go", 'gomod'},
+    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+    opts = {
+      lsp_inlay_hints = {
+        enable = true,
+        only_current_line = false,
+      }
+    }
+  },
+
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
@@ -223,6 +264,17 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 
+-- Run gofmt + goimport on save
+
+local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+   require('go.format').goimport()
+  end,
+  group = format_sync_grp,
+})
+
 -- Set the cwd to the directory of the file you're editing.
 vim.cmd([[autocmd BufEnter * execute 'cd ' .. expand('%:p:h')]])
 
@@ -279,7 +331,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Keep signcolumn on by default
-vim.wo.signcolumn = 'yes'
+-- vim.wo.signcolumn = 'no'
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -471,17 +523,12 @@ end
 --  Add any additional override configuration in the following tables. They will be passed to
 --  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
   csharp_ls = {},
   hls = {},
   rust_analyzer = {},
   ocamllsp = {},
   pyright = {},
-  gopls = {},
+  -- gopls = {},
   html = {},
   cssls = {},
   tsserver = {},
