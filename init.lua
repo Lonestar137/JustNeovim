@@ -63,7 +63,7 @@ require('lazy').setup({
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
-  {'Exafunction/codeium.vim', lazy = false},
+  { 'Exafunction/codeium.vim', lazy = false },
   {
     "folke/zen-mode.nvim",
     opts = {
@@ -73,11 +73,11 @@ require('lazy').setup({
     }
   },
   {
-      "kdheepak/lazygit.nvim",
-      -- optional for floating window border decoration
-      dependencies = {
-          "nvim-lua/plenary.nvim",
-      },
+    "kdheepak/lazygit.nvim",
+    -- optional for floating window border decoration
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
   },
   {
     "windwp/nvim-autopairs",
@@ -85,15 +85,36 @@ require('lazy').setup({
     opts = {},
   },
 
-  {'romgrk/nvim-treesitter-context',
+  {
+    'romgrk/nvim-treesitter-context',
     dependencies = {
       'nvim-treesitter/nvim-treesitter'
     },
     config = function() require('treesitter-context').setup() end,
   },
+
+  {
+    'scalameta/nvim-metals',
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local metals_config = require("metals").bare_config()
+      local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+      vim.api.nvim_create_autocmd("FileType", {
+        -- NOTE: You may or may not want java included here. You will need it if you
+        -- want basic Java support but it may also conflict if you are using
+        -- something like nvim-jdtls which also works on a java filetype autocmd.
+        pattern = { "scala", "sbt", "java" },
+        callback = function()
+          require("metals").initialize_or_attach(metals_config)
+        end,
+        group = nvim_metals_group,
+      })
+
+    end,
+  },
   {
     "ray-x/go.nvim",
-    dependencies = {  -- optional packages
+    dependencies = { -- optional packages
       "ray-x/guihua.lua",
       "neovim/nvim-lspconfig",
       "nvim-treesitter/nvim-treesitter",
@@ -101,8 +122,8 @@ require('lazy').setup({
     config = function()
       require("go").setup()
     end,
-    event = {"CmdlineEnter"},
-    ft = {"go", 'gomod'},
+    event = { "CmdlineEnter" },
+    ft = { "go", 'gomod' },
     build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
     opts = {
       lsp_inlay_hints = {
@@ -127,7 +148,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -151,7 +172,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',    opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -166,14 +187,15 @@ require('lazy').setup({
         untracked = { text = "│" },
       },
       on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
+        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk,
+          { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
         vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
         vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
         -- :highlight GitSignsAdd ctermfg=Blue guifg=#009900
         vim.cmd('highlight GitSignsAdd guifg=Lime guibg=NONE')
         vim.cmd('highlight GitSignsChange guifg=Gray guibg=NONE')
         vim.cmd('highlight GitSignsDelete guifg=Red guibg=NONE')
-        -- make the Gitsigns gutter transparent 
+        -- make the Gitsigns gutter transparent
         vim.cmd('highlight SignColumn guibg=NONE')
       end,
     },
@@ -224,7 +246,7 @@ require('lazy').setup({
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',         opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
@@ -270,7 +292,7 @@ local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*.go",
   callback = function()
-   require('go.format').goimport()
+    require('go.format').goimport()
   end,
   group = format_sync_grp,
 })
@@ -285,7 +307,7 @@ vim.cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
 -- Set scrolloff
 vim.o.scrolloff = 30
-vim.api.nvim_win_set_option(0, 'sidescrolloff', 10)    -- Set the number of columns from the side to start horizontal scrolling
+vim.api.nvim_win_set_option(0, 'sidescrolloff', 10) -- Set the number of columns from the side to start horizontal scrolling
 
 vim.cmd("set guifont=Hack\\ Nerd\\ Font:h10")
 -- vim.cmd("set autoindent")
